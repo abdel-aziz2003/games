@@ -1,6 +1,6 @@
 @php
-    // Get all categories ordered by name
-    $category_list = \App\Models\Category::orderBy('name')->get();
+use Illuminate\Support\Str;
+$category_list = \App\Models\Category::orderBy('name')->get();
 @endphp
 
 <x-front-template>
@@ -29,17 +29,16 @@
             font-weight: bold;
         }
 
-        /* Optional: style the <em> inside Featured title */
         .featured-title h4 em {
             color: #ff3c82 !important;
-            font-style: normal; /* remove italic if you want */
+            font-style: normal;
         }
 
         .category-title h4 {
             color: #ff3c82 !important;
         }
 
-        /* Hide the dropdown on desktop */
+        /* Hide dropdown on desktop */
         #categoryDropdown {
             display: none;
             margin-bottom: 20px;
@@ -50,12 +49,9 @@
             #categoryDropdown {
                 display: block;
             }
-            /* Hide sidebar categories on mobile */
             .sidebar-categories {
                 display: none;
             }
-
-            /* Black style for select on mobile */
             #categorySelect {
                 background-color: #2b2c2f;
                 color: #ffffff;
@@ -64,26 +60,70 @@
                 padding: 8px 12px;
                 cursor: pointer;
             }
-
             #categorySelect option {
                 background-color: #2b2c2f;
                 color: #ffffff;
             }
         }
+
+        /* Game card styling */
+        .game-card {
+            background-color: #2b2c2f;
+            padding: 15px;
+            border-radius: 15px;
+            transition: box-shadow 0.3s ease, transform 0.3s ease;
+            color: #ddd;
+            margin-bottom: 20px;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .game-card:hover {
+            box-shadow: 0 8px 20px rgba(255, 60, 130, 0.4);
+            transform: translateY(-5px);
+            color: #fff;
+        }
+
+        .game-card h5 {
+            color: #ff3c82;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        .game-card p {
+            flex-grow: 1;
+        }
+
+        .btn-play {
+            background-color: #ff3c82;
+            border: none;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 25px;
+            text-decoration: none;
+            text-align: center;
+            font-weight: 600;
+            transition: background-color 0.3s ease;
+        }
+
+        .btn-play:hover {
+            background-color: #e1326b;
+            color: white;
+        }
     </style>
 
     <div class="container-fluid">
         <div class="row" style="min-height: 100vh; margin: 0;">
-
-            <!-- Banner + Featured Games on Mobile and Desktop -->
+            <!-- Main Content -->
             <div class="col-12 col-lg-9 order-1" style="padding: 20px;">
-
                 <!-- Banner -->
                 <div class="main-banner mb-4"
                     style="background-image: url({{ url('public/images/' . config('settings.home_banner')) }}); background-position: center center; background-size: cover; min-height: 380px; border-radius: 23px; padding: 80px 60px;">
                 </div>
 
-                <!-- Dropdown Categories on Mobile -->
+                <!-- Dropdown categories mobile -->
                 <div id="categoryDropdown">
                     <label for="categorySelect" class="text-white mb-2">Show All Categories</label>
                     <select id="categorySelect" class="form-select">
@@ -101,7 +141,17 @@
                     </div>
                     <div class="row">
                         @if (isset($game_list) && $game_list->count() > 0)
-                            <x-game-list :list="$game_list" />
+                            @foreach ($game_list as $game)
+                                <div class="col-md-4">
+                                    <div class="game-card">
+                                        <h5>{{ $game->title }}</h5>
+                                        <p>{{ \Illuminate\Support\Str::limit($game->description, 100) }}</p>
+                                        <a href="{{ route('play', ['title' => \Illuminate\Support\Str::slug($game->title)]) }}" class="btn-play">
+                                            Jouer
+                                        </a>
+                                    </div>
+                                </div>
+                            @endforeach
                         @else
                             <p class="text-white">No featured games available.</p>
                         @endif
@@ -114,14 +164,12 @@
                         </div>
                     </div>
                 </div>
-
             </div>
 
             <!-- Sidebar with Categories on Desktop Only -->
             <div class="col-lg-3 order-2 sidebar-categories" style="background-color: #1f2122; padding: 20px;">
                 <x-category-section />
             </div>
-
         </div>
     </div>
 
@@ -132,5 +180,4 @@
             }
         });
     </script>
-
 </x-front-template>

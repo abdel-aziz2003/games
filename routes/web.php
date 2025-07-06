@@ -70,7 +70,7 @@ require __DIR__.'/auth.php';
 Route::get('/game/create/{id?}', [GameController::class, 'create'])->middleware(['auth', 'access:1'])->name('game_create');
 Route::post('/game/store', [GameController::class, 'store'])->middleware(['auth', 'access:1', 'demo'])->name('game_store');
 Route::get('/game/delete/{id}', [GameController::class, 'delete'])->middleware(['auth', 'access:1', 'demo'])->name('game_delete');
-Route::get('/game/play/{id}', [GameController::class, 'play'])->name('play');
+Route::get('/game/play/{title}', [GameController::class, 'play'])->name('play');
 Route::post('/game/like_game', [GameController::class, 'like_game'])->name('like_game');
 Route::post('/game/dislike_game', [GameController::class, 'dislike_game'])->name('dislike_game');
 Route::get('/{category?}', [GameController::class, 'index'])->name('game');
