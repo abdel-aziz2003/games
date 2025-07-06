@@ -191,3 +191,4 @@
         });
     </script>
 </x-front-template>
+aziz
