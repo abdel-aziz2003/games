@@ -1,6 +1,6 @@
 @php
-    use Illuminate\Support\Str;
-    $category_list = \App\Models\Category::orderBy('name')->get();
+use Illuminate\Support\Str;
+$category_list = \App\Models\Category::orderBy('name')->get();
 @endphp
 
 <x-front-template>
@@ -23,7 +23,6 @@
             box-shadow: 0 4px 10px rgba(255, 60, 130, 0.3);
         }
 
-        /* Featured title styled pink and bold */
         .featured-title h4 {
             color: #ff3c82 !important;
             font-weight: bold;
@@ -34,17 +33,11 @@
             font-style: normal;
         }
 
-        .category-title h4 {
-            color: #ff3c82 !important;
-        }
-
-        /* Hide dropdown on desktop */
         #categoryDropdown {
             display: none;
             margin-bottom: 20px;
         }
 
-        /* Show dropdown only on small/mobile */
         @media (max-width: 991.98px) {
             #categoryDropdown {
                 display: block;
@@ -69,51 +62,67 @@
             }
         }
 
-        /* Game card styling */
         .game-card {
             background-color: #2b2c2f;
             padding: 15px;
             border-radius: 15px;
             transition: box-shadow 0.3s ease, transform 0.3s ease;
-            color: #ddd;
-            margin-bottom: 20px;
+            color: #fff;
+            text-align: center;
             height: 100%;
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
         }
 
         .game-card:hover {
-            box-shadow: 0 8px 20px rgba(255, 60, 130, 0.4);
+            box-shadow: 0 8px 20px rgba(255, 60, 130, 0.5);
             transform: translateY(-5px);
-            color: #fff;
+        }
+
+        .image-wrapper {
+            position: relative;
+            display: inline-block;
+        }
+
+        .image-wrapper img {
+            max-width: 100%;
+            border-radius: 12px;
+            box-shadow: 0 4px 10px rgba(255,60,130,0.3);
+            margin-bottom: 10px;
+            transition: filter 0.3s ease, opacity 0.3s ease;
+        }
+
+        /* Effet gris + opacité réduite sur l’image au hover */
+        .game-card:hover .image-wrapper img {
+            filter: grayscale(70%);
+            opacity: 0.7;
+        }
+
+        .start-icon {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) scale(0.9);
+            font-size: 48px;
+            color: #ff3c82;
+            opacity: 0;
+            transition: opacity 0.5s ease 0.2s, transform 0.3s ease;
+            z-index: 2;
+            pointer-events: none;
+        }
+
+        .game-card:hover .start-icon {
+            opacity: 1;
+            transform: translate(-50%, -50%) scale(1.2);
         }
 
         .game-card h5 {
-            color: #ff3c82;
+            color: #ffffff;
             font-weight: bold;
-            margin-bottom: 10px;
+            margin-bottom: 0;
+            transition: color 0.3s ease;
         }
 
-        .game-card p {
-            flex-grow: 1;
-        }
-
-        .btn-play {
-            background-color: #ff3c82;
-            border: none;
-            color: white;
-            padding: 10px 20px;
-            border-radius: 25px;
-            text-decoration: none;
-            text-align: center;
-            font-weight: 600;
-            transition: background-color 0.3s ease;
-        }
-
-        .btn-play:hover {
-            background-color: #e1326b;
-            color: white;
+        .game-card:hover h5 {
+            color: #ff3c82;
         }
     </style>
 
@@ -126,12 +135,12 @@
                     style="background-image: url({{ url('public/images/' . config('settings.home_banner')) }}); background-position: center center; background-size: cover; min-height: 380px; border-radius: 23px; padding: 80px 60px;">
                 </div>
 
-                <!-- Dropdown categories mobile -->
+                <!-- Dropdown categories on mobile -->
                 <div id="categoryDropdown">
                     <label for="categorySelect" class="text-white mb-2">Show All Categories</label>
                     <select id="categorySelect" class="form-select">
                         <option value="">Select Category</option>
-                        @foreach ($category_list as $category)
+                        @foreach($category_list as $category)
                             <option value="{{ url('/' . $category->name) }}">{{ $category->name }}</option>
                         @endforeach
                     </select>
@@ -145,21 +154,16 @@
                     <div class="row">
                         @if (isset($game_list) && $game_list->count() > 0)
                             @foreach ($game_list as $game)
-                                <div class="col-md-4">
-                                    <div class="game-card">
-                                        <!-- Image du jeu depuis URL complète -->
-                                        <div style="text-align:center; margin-bottom: 15px;">
-                                            <img src="{{ $game->thumb }}" alt="{{ $game->title }}"
-                                                style="max-width: 100%; border-radius: 12px; box-shadow: 0 4px 10px rgba(255,60,130,0.3);" />
+                                <div class="col-md-4 mb-4">
+                                    <a href="{{ route('play', ['title' => Str::slug($game->title)]) }}" style="text-decoration: none;">
+                                        <div class="game-card">
+                                            <div class="image-wrapper">
+                                                <img src="{{ $game->thumb }}" alt="{{ $game->title }}">
+                                                <div class="start-icon">⏻</div>
+                                            </div>
+                                            <h5>{{ $game->title }}</h5>
                                         </div>
-
-                                        <h5>{{ $game->title }}</h5>
-                                        <p>{{ \Illuminate\Support\Str::limit($game->description, 100) }}</p>
-                                        <a href="{{ route('play', ['title' => \Illuminate\Support\Str::slug($game->title)]) }}"
-                                            class="btn-play">
-                                            Jouer
-                                        </a>
-                                    </div>
+                                    </a>
                                 </div>
                             @endforeach
                         @else
@@ -176,7 +180,7 @@
                 </div>
             </div>
 
-            <!-- Sidebar with Categories on Desktop Only -->
+            <!-- Sidebar categories on desktop -->
             <div class="col-lg-3 order-2 sidebar-categories" style="background-color: #1f2122; padding: 20px;">
                 <x-category-section />
             </div>
@@ -184,11 +188,10 @@
     </div>
 
     <script>
-        document.getElementById('categorySelect').addEventListener('change', function() {
+        document.getElementById('categorySelect').addEventListener('change', function () {
             if (this.value) {
                 window.location.href = this.value;
             }
         });
     </script>
 </x-front-template>
-
