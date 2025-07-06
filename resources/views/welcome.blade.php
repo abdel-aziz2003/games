@@ -1,6 +1,6 @@
 @php
-use Illuminate\Support\Str;
-$category_list = \App\Models\Category::orderBy('name')->get();
+    use Illuminate\Support\Str;
+    $category_list = \App\Models\Category::orderBy('name')->get();
 @endphp
 
 <x-front-template>
@@ -49,9 +49,11 @@ $category_list = \App\Models\Category::orderBy('name')->get();
             #categoryDropdown {
                 display: block;
             }
+
             .sidebar-categories {
                 display: none;
             }
+
             #categorySelect {
                 background-color: #2b2c2f;
                 color: #ffffff;
@@ -60,6 +62,7 @@ $category_list = \App\Models\Category::orderBy('name')->get();
                 padding: 8px 12px;
                 cursor: pointer;
             }
+
             #categorySelect option {
                 background-color: #2b2c2f;
                 color: #ffffff;
@@ -128,7 +131,7 @@ $category_list = \App\Models\Category::orderBy('name')->get();
                     <label for="categorySelect" class="text-white mb-2">Show All Categories</label>
                     <select id="categorySelect" class="form-select">
                         <option value="">Select Category</option>
-                        @foreach($category_list as $category)
+                        @foreach ($category_list as $category)
                             <option value="{{ url('/' . $category->name) }}">{{ $category->name }}</option>
                         @endforeach
                     </select>
@@ -144,9 +147,16 @@ $category_list = \App\Models\Category::orderBy('name')->get();
                             @foreach ($game_list as $game)
                                 <div class="col-md-4">
                                     <div class="game-card">
+                                        <!-- Image du jeu depuis URL complète -->
+                                        <div style="text-align:center; margin-bottom: 15px;">
+                                            <img src="{{ $game->thumb }}" alt="{{ $game->title }}"
+                                                style="max-width: 100%; border-radius: 12px; box-shadow: 0 4px 10px rgba(255,60,130,0.3);" />
+                                        </div>
+
                                         <h5>{{ $game->title }}</h5>
                                         <p>{{ \Illuminate\Support\Str::limit($game->description, 100) }}</p>
-                                        <a href="{{ route('play', ['title' => \Illuminate\Support\Str::slug($game->title)]) }}" class="btn-play">
+                                        <a href="{{ route('play', ['title' => \Illuminate\Support\Str::slug($game->title)]) }}"
+                                            class="btn-play">
                                             Jouer
                                         </a>
                                     </div>
@@ -174,7 +184,7 @@ $category_list = \App\Models\Category::orderBy('name')->get();
     </div>
 
     <script>
-        document.getElementById('categorySelect').addEventListener('change', function () {
+        document.getElementById('categorySelect').addEventListener('change', function() {
             if (this.value) {
                 window.location.href = this.value;
             }
