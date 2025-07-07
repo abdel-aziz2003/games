@@ -155,7 +155,7 @@ $category_list = \App\Models\Category::orderBy('name')->get();
                         @if (isset($game_list) && $game_list->count() > 0)
                             @foreach ($game_list as $game)
                                 <div class="col-md-4 mb-4">
-                                    <a href="{{ route('play', ['title' => Str::slug($game->title)]) }}" style="text-decoration: none;">
+                                    <a href="{{ route('play', ['slug' => $game->slug]) }}" style="text-decoration: none;">
                                         <div class="game-card">
                                             <div class="image-wrapper">
                                                 <img src="{{ $game->thumb }}" alt="{{ $game->title }}">
@@ -195,3 +195,4 @@ $category_list = \App\Models\Category::orderBy('name')->get();
         });
     </script>
 </x-front-template>
+<x-foot-inc/>

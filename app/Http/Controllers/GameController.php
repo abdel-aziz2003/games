@@ -48,35 +48,40 @@ class GameController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'title' => 'required',
-            'description' => 'required',
-            'instructions' => 'required',
-            'url' => 'required',
-            'category' => 'required',
-            'thumb' => 'required'
-        ]);
+        'title' => 'required',
+        'description' => 'required',
+        'instructions' => 'required',
+        'url' => 'required',
+        'category' => 'required',
+        'thumb' => 'required',
+        'slug' => 'nullable|unique:games,slug,' . $request->input('id'),
+        'meta_title' => 'nullable|string|max:255',
+        'meta_description' => 'nullable|string|max:1000',
+    ]);
 
-        if ($request->has('id')) {
-            $table = Game::find($request->input('id'));
-        } else {
-            $table = new Game();
-        }
-        $game_id = Game::max('game_id') ?? 1;
+    if ($request->has('id')) {
+        $table = Game::find($request->input('id'));
+    } else {
+        $table = new Game();
+        $table->api_id = 2;
+    }
 
-        $table->game_id = $game_id;
-        $table->title = $request->input('title');
-        $table->description = $request->input('description');
-        $table->instructions = $request->input('instructions');
-        $table->url = $request->input('url');
-        $table->category_id = $request->input('category');
-        $table->thumb = $request->input('thumb');
-        if ($request->input('id') == '') {
-            $table->api_id = 2;
-        }
+    $game_id = Game::max('game_id') ?? 1;
 
-        $table->save();
+    $table->game_id = $game_id;
+    $table->title = $request->input('title');
+    $table->slug = $request->input('slug') ?: Str::slug($request->input('title'));
+    $table->meta_title = $request->input('meta_title');
+    $table->meta_description = $request->input('meta_description');
+    $table->description = $request->input('description');
+    $table->instructions = $request->input('instructions');
+    $table->url = $request->input('url');
+    $table->category_id = $request->input('category');
+    $table->thumb = $request->input('thumb');
 
-        return redirect()->route('game')->with('status', 'Game saved');
+    $table->save();
+
+    return redirect()->route('game')->with('status', 'Game saved');
     }
 
     public function delete($id)
@@ -99,15 +104,11 @@ class GameController extends Controller
     //     return view('game.play', ['info' => $info, 'related_games' => $related_games]);
     // }
 
-public function play(Request $request, $title)
+public function play(Request $request, $slug)
 {
-    // Convert slug back to readable title (dashes to spaces)
-    $readableTitle = Str::of($title)->replace('-', ' ')->__toString();
+    // Look up by slug directly (faster and cleaner)
+    $info = Game::where('slug', $slug)->firstOrFail();
 
-    // Find game by title
-    $info = Game::whereRaw('LOWER(title) = ?', [strtolower($readableTitle)])->firstOrFail();
-
-    // Views tracking
     if (session('my_view_' . $info->id) == '') {
         $info->view += 1;
         $info->save();
@@ -118,7 +119,9 @@ public function play(Request $request, $title)
 
     return view('game.play', [
         'info' => $info,
-        'related_games' => $related_games
+        'related_games' => $related_games,
+        'title' => $info->meta_title ?? $info->title,
+        'meta_description' => $info->meta_description ?? Str::limit(strip_tags($info->description), 150),
     ]);
 }
 
