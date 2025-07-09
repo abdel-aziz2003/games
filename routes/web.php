@@ -73,4 +73,4 @@ Route::get('/game/delete/{id}', [GameController::class, 'delete'])->middleware([
 Route::get('/game/play/{slug}', [GameController::class, 'play'])->name('play');
 Route::post('/game/like_game', [GameController::class, 'like_game'])->name('like_game');
 Route::post('/game/dislike_game', [GameController::class, 'dislike_game'])->name('dislike_game');
-Route::get('/{category?}', [GameController::class, 'index'])->name('game');
+Route::get('/{category_slug?}', [GameController::class, 'index'])->name('game');

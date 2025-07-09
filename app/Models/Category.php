@@ -13,4 +13,10 @@ class Category extends Model
     {
         return $this->hasMany(Game::class);
     }
+    // In App\Models\Category.php
+    public function getSlugAttribute()
+    {
+        return \Illuminate\Support\Str::slug($this->name);
+    }
+
 }

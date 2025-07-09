@@ -10,31 +10,36 @@ use Illuminate\Support\Facades\Auth;
 
 class GameController extends Controller
 {
-    public function index($filter = '--', $category = '--')
-    {
-        $ft = filter($filter);
-        $and = $ft['and'];
-        $vfilter = $ft['vfilter'];
+    public function index($category_slug = '--')
+{
+    $category_list = Category::orderBy('name')->get();
 
-        $category_list = Category::orderBy('name')->get();
-
-        if ($category != '--') {
-            $and = $and . " and category_id = $category ";
-        }
-        if (Auth::check()) {
-            $list_count = 20;
-        } else {
-            $list_count = 30;
-        }
-
-        $list = Game::whereRaw("id > 0 $and")->orderBy('game_id', 'desc')->orderBy('created_at', 'desc')->paginate($list_count);
-
-        if (Auth::check()) {
-            return view('game.index', ['list' => $list, 'vfilter' => $vfilter, 'category_list' => $category_list]);
-        } else {
-            return view('game.index_front', ['list' => $list, 'vfilter' => $vfilter, 'category_list' => $category_list, 'category' => $category]);
-        }
+    $category_model = null;
+    if ($category_slug !== '--') {
+        $category_model = $category_list->first(function ($cat) use ($category_slug) {
+            return \Illuminate\Support\Str::slug($cat->name) === strtolower($category_slug);
+        });
     }
+
+    $query = Game::query();
+
+    if ($category_model) {
+        $query->where('category_id', $category_model->id);
+    }
+
+    $list = $query->orderBy('game_id', 'desc')->orderBy('created_at', 'desc')->paginate(20);
+
+    return view('game.index_front', [
+        'list' => $list,
+        'category_list' => $category_list,
+        'category' => $category_model,
+        'vfilter' => '',
+    ]);
+}
+
+
+
+
 
     public function create($id = '--')
     {
