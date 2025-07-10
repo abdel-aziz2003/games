@@ -67,6 +67,7 @@ require __DIR__.'/auth.php';
 
 
 //GameController
+Route::get('/create', [GameController::class, 'manage'])->middleware(['auth', 'access:1'])->name('game_manage');
 Route::get('/game/create/{id?}', [GameController::class, 'create'])->middleware(['auth', 'access:1'])->name('game_create');
 Route::post('/game/store', [GameController::class, 'store'])->middleware(['auth', 'access:1', 'demo'])->name('game_store');
 Route::get('/game/delete/{id}', [GameController::class, 'delete'])->middleware(['auth', 'access:1', 'demo'])->name('game_delete');

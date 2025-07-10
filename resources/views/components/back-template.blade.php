@@ -32,7 +32,7 @@
                     <i class="fas fa-home"></i> Dashboard </a>
                     <a href="{{ route('category') }}" class="dash-nav-item">
                         <i class="fas fa-layer-group"></i> Categories </a>
-                    <a href="{{ route('game_create') }}" class="dash-nav-item">
+                    <a href="{{ route('game_manage') }}" class="dash-nav-item">
                         <i class="fas fa-gamepad"></i> Games </a>
                 <!--<div class="dash-nav-dropdown">
                     <a href="#!" class="dash-nav-item dash-nav-dropdown-toggle">

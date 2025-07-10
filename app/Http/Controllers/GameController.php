@@ -29,12 +29,21 @@ class GameController extends Controller
 
     $list = $query->orderBy('game_id', 'desc')->orderBy('created_at', 'desc')->paginate(20);
 
+    if (Auth::check()) {
+    return view('game.index', [
+        'list' => $list,
+        'category_list' => $category_list,
+        'category' => $category_model,
+        'vfilter' => '',
+    ]);
+} else {
     return view('game.index_front', [
         'list' => $list,
         'category_list' => $category_list,
         'category' => $category_model,
         'vfilter' => '',
     ]);
+}
 }
 
 
@@ -158,4 +167,17 @@ public function play(Request $request, $slug)
         $res = ['count' => $info->thumb_down, 'code' => 200];
         echo json_encode($res);
     }
+    public function manage()
+    {
+        $category_list = Category::orderBy('name')->get();
+        $list = Game::orderBy('game_id', 'desc')->paginate(20);
+
+        return view('game.index', [
+            'list' => $list,
+            'category_list' => $category_list,
+            'vfilter' => '',
+        ]);
+    }
 }
+
+
