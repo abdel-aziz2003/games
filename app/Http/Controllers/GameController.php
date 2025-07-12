@@ -167,43 +167,44 @@ public function play(Request $request, $slug)
         $res = ['count' => $info->thumb_down, 'code' => 200];
         echo json_encode($res);
     }
+
     public function manage(Request $request)
-{
-    $category_list = Category::orderBy('name')->get();
+    {
+        $category_list = Category::orderBy('name')->get();
 
-    $query = Game::query();
+        $query = Game::query();
 
-    // Apply search filter
-    if ($request->filled('q')) {
-        $search = $request->input('q');
-        $query->where('title', 'like', '%' . $search . '%');
-    }
-
-    // Apply category filter
-    if ($request->filled('category')) {
-        $query->where('category_id', $request->input('category'));
-    }
-
-    // Apply date range filter (optional)
-    if ($request->filled('drange')) {
-        // Example: parse the date range string (format depends on your input)
-        // For example, "2023-01-01 - 2023-01-31"
-        $dates = explode(' - ', $request->input('drange'));
-        if (count($dates) == 2) {
-            $startDate = $dates[0];
-            $endDate = $dates[1];
-            $query->whereBetween('created_at', [$startDate, $endDate]);
+        // Apply search filter
+        if ($request->filled('q')) {
+            $search = $request->input('q');
+            $query->where('title', 'like', '%' . $search . '%');
         }
+
+        // Apply category filter
+        if ($request->filled('category')) {
+            $query->where('category_id', $request->input('category'));
+        }
+
+        // Apply date range filter (optional)
+        if ($request->filled('drange')) {
+            // Example: parse the date range string (format depends on your input)
+            // For example, "2023-01-01 - 2023-01-31"
+            $dates = explode(' - ', $request->input('drange'));
+            if (count($dates) == 2) {
+                $startDate = $dates[0];
+                $endDate = $dates[1];
+                $query->whereBetween('created_at', [$startDate, $endDate]);
+            }
+        }
+
+        $list = $query->orderBy('game_id', 'desc')->paginate(20);
+
+        return view('game.index', [
+            'list' => $list,
+            'category_list' => $category_list,
+            'vfilter' => $request->all(),
+        ]);
     }
-
-    $list = $query->orderBy('game_id', 'desc')->paginate(20);
-
-    return view('game.index', [
-        'list' => $list,
-        'category_list' => $category_list,
-        'vfilter' => $request->all(),
-    ]);
-}
 }
 
 
