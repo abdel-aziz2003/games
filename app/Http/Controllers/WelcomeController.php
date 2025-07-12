@@ -22,26 +22,26 @@ class WelcomeController extends Controller
         return view('welcome', ['game_list' => $game_list]);
     }
 
-    // public function filter(Request $request, $route, $ext = '--')
-    // {
-    //     $ft = '';
-    //     if ($request->input('search') != '') {
-    //         $ft = $ft . "search__" . $request->input('search') . "--";
-    //     }
-    //     if ($request->input('category') != '') {
-    //         $ft = $ft . "category__" . $request->input('category') . "--";
-    //     }
-    //     if ($request->input('drange') != '') {
-    //         $ft = $ft . "drange__" . $request->input('drange') . "--";
-    //     }
+    public function filter(Request $request, $route, $ext = '--')
+    {
+        $ft = '';
+        if ($request->input('search') != '') {
+            $ft = $ft . "search__" . $request->input('search') . "--";
+        }
+        if ($request->input('category') != '') {
+            $ft = $ft . "category__" . $request->input('category') . "--";
+        }
+        if ($request->input('drange') != '') {
+            $ft = $ft . "drange__" . $request->input('drange') . "--";
+        }
 
 
-    //     if ($ft != '') {
-    //         $ft = substr($ft, 0, -2);
-    //     }
+        if ($ft != '') {
+            $ft = substr($ft, 0, -2);
+        }
 
-    //     return redirect()->route($route, ['filter' => $ft]);
-    // }
+        return redirect()->route($route, ['filter' => $ft]);
+    }
 
     public function contact()
     {

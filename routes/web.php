@@ -13,7 +13,7 @@ use App\Http\Controllers\CategoryController;
 //WelcomeController
 Route::get('/megzy', [WelcomeController::class, 'megzy'])->name('megzy');
 Route::get('/', [WelcomeController::class, 'index'])->name('welcome');
-// Route::post('/filter/{route}/{ext?}', [WelcomeController::class, 'filter'])->name('filter');
+Route::post('/filter/{route}/{ext?}', [WelcomeController::class, 'filter'])->name('filter');
 Route::get('/notice', [WelcomeController::class, 'notice'])->name('notice');
 Route::get('/contact', [WelcomeController::class, 'contact'])->name('contact');
 Route::post('/contact/store', [WelcomeController::class, 'contact_store'])->name('contact_store');
@@ -69,6 +69,7 @@ require __DIR__.'/auth.php';
 
 
 //GameController
+// Route::get('/create', [GameController::class, 'manage'])->middleware(['auth', 'access:1'])->name('game_manage');
 Route::get('/create', [GameController::class, 'manage'])->middleware(['auth', 'access:1'])->name('game_manage');
 Route::get('/game/create/{id?}', [GameController::class, 'create'])->middleware(['auth', 'access:1'])->name('game_create');
 Route::post('/game/store', [GameController::class, 'store'])->middleware(['auth', 'access:1', 'demo'])->name('game_store');
