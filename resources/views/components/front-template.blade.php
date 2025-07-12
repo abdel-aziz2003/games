@@ -52,12 +52,14 @@ $page_list = Page::where('id', '<>', 1)->get();
 
             <!-- Search -->
             <div class="search-input">
-              <form id="search" action="{{ route('filter', ['route' => 'game']) }}" method="post">
-                @csrf
-                <input type="text" placeholder="Search Game" id="searchText" name="search" />
-                <i class="fa fa-search"></i>
-              </form>
+                <form id="search" action="{{ route('search') }}" method="GET">
+                    @csrf
+                    <input type="text" placeholder="Search Game" id="searchText" name="q" value="{{ request('q') }}" />
+                    <i class="fa fa-search"></i>
+                </form>
             </div>
+
+
 
             <!-- Nav Menu -->
             <ul class="nav">
