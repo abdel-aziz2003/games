@@ -79,18 +79,21 @@ $category_list = \App\Models\Category::orderBy('name')->get();
 
         .image-wrapper {
             position: relative;
-            display: inline-block;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-bottom: 10px;
         }
 
         .image-wrapper img {
-            max-width: 100%;
+            width: 300px;
+            height: 200px;
+            object-fit: cover;
             border-radius: 12px;
             box-shadow: 0 4px 10px rgba(255,60,130,0.3);
-            margin-bottom: 10px;
             transition: filter 0.3s ease, opacity 0.3s ease;
         }
 
-        /* Effet gris + opacité réduite sur l’image au hover */
         .game-card:hover .image-wrapper img {
             filter: grayscale(70%);
             opacity: 0.7;
