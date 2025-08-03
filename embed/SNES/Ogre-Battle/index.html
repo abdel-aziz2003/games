@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Ogre Battle - The March of the Black Queen (USA) - SNES</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        html, body {
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+            background: #2b2c2f;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-family: Arial, sans-serif;
+        }
+        #game {
+            width: 100vw;
+            height: 100vh;
+            display: none;
+        }
+        #game.show {
+            display: block;
+        }
+        #startMenu {
+            text-align: center;
+            color: white;
+        }
+        #startMenu h1 {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.8);
+        }
+        #startButton {
+            background: #ff3c82;
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            font-size: 1.2rem;
+            font-weight: bold;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            box-shadow: 0 4px 8px rgba(255, 60, 130, 0.3);
+        }
+        #startButton:hover {
+            background: #e6356b;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(255, 60, 130, 0.4);
+        }
+        #startButton:active {
+            transform: translateY(0);
+            box-shadow: 0 2px 4px rgba(255, 60, 130, 0.3);
+        }
+        #loading {
+            display: none;
+            color: #ff3c82;
+            font-size: 1.1rem;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div id="startMenu">
+        <h1>Ogre Battle - The March of the Black Queen (USA)</h1>
+        <button id="startButton" onclick="startGame()">Start Game</button>
+        <div id="loading">Loading SNES emulator...</div>
+    </div>
+    <div id="game"></div>
+
+    <script>
+        function startGame() {
+            document.getElementById('startMenu').style.display = 'none';
+            document.getElementById('loading').style.display = 'block';
+
+            const gameDiv = document.getElementById('game');
+            gameDiv.classList.add('show');
+
+            window.EJS_player = "#game";
+            window.EJS_core = "snes";
+            window.EJS_gameUrl = "roms/Ogre-Battle-The-March-of-the-Black-Queen-USA.sfc"; // Clean file name
+            window.EJS_gameName = "Ogre Battle - The March of the Black Queen (USA)";
+            window.EJS_pathtodata = "https://cdn.emulatorjs.org/stable/data/";
+            window.EJS_startOnLoaded = true;
+            window.EJS_fullscreenOnLoaded = false;
+            window.EJS_loadStateOnStart = false;
+
+            const script = document.createElement("script");
+            script.src = "https://cdn.emulatorjs.org/stable/data/loader.js";
+            script.onload = () => {
+                document.getElementById('loading').style.display = 'none';
+            };
+            document.body.appendChild(script);
+        }
+    </script>
+</body>
+</html>
